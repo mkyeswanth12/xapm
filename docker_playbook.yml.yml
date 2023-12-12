@@ -1,0 +1,13 @@
+---
+- name: Run Docker container on localhost
+  hosts: localhost
+
+  tasks:
+    - name: Run Docker container
+      docker_container:
+        name: xapm
+        image: xapm-ansible:latest
+        state: started
+        ports:
+          - "4000:4000"
+          - "4001:4001"

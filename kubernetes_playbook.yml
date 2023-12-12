@@ -1,0 +1,45 @@
+---
+- name: Deploy xapm container to Kubernetes
+  hosts: localhost
+  gather_facts: no
+  tasks:
+    - name: Apply Kubernetes manifest
+      k8s:
+        state: present
+        definition: |
+          apiVersion: apps/v1
+          kind: Deployment
+          metadata:
+            name: xapm-deployment
+          spec:
+            replicas: 1
+            selector:
+              matchLabels:
+                app: xapm
+            template:
+              metadata:
+                labels:
+                  app: xapm
+              spec:
+                containers:
+                  - name: xapm
+                    image: xapm-ansible:latest
+                    ports:
+                      - containerPort: 4000
+                      - containerPort: 4001
+          ---
+          apiVersion: v1
+          kind: Service
+          metadata:
+            name: xapm-service
+          spec:
+            selector:
+              app: xapm
+            ports:
+              - protocol: TCP
+                port: 4000
+                targetPort: 4000
+              - protocol: TCP
+                port: 4001
+                targetPort: 4001
+            type: NodePort  

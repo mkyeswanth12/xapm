@@ -1,0 +1,42 @@
+- name: Install and configure PostgreSQL on Debian
+  hosts: localhost
+  become: true
+
+  tasks:
+    - name: Update apt package cache
+      apt:
+        update_cache: yes
+
+    - name: Install PostgreSQL and Python library for PostgreSQL
+      apt:
+        name: "{{ item }}"
+        state: present
+      loop:
+        - postgresql
+        - python3-psycopg2  # Python library for PostgreSQL
+
+    - name: Start PostgreSQL service and enable it on boot
+      service:
+        name: postgresql
+        state: started
+        enabled: yes
+
+    - name: Execute SQL script to create database
+      command: psql -U postgres -c "CREATE DATABASE \"docketeer-db\";"
+      become: true
+
+    - name: Execute SQL script to create tables
+      command: psql -U postgres -d docketeer-db -c "CREATE TABLE IF NOT EXISTS users (user_id SERIAL PRIMARY KEY, username VARCHAR(50) UNIQUE NOT NULL, email VARCHAR(100) UNIQUE NOT NULL, password VARCHAR(100) NOT NULL);"
+      become: true
+
+    - name: Alter PostgreSQL user password
+      command: psql -U postgres -d docketeer-db -c "ALTER USER postgres PASSWORD 'postgres';"
+      become: true
+
+    - name: Grant privileges on the database to the PostgreSQL user
+      command: psql -U postgres -d docketeer-db -c "GRANT ALL PRIVILEGES ON DATABASE \"docketeer-db\" TO postgres;"
+      become: true
+
+    - name: Grant privileges on the users table to the PostgreSQL user
+      command: psql -U postgres -d docketeer-db -c "GRANT ALL PRIVILEGES ON TABLE users TO postgres;"
+      become: true
