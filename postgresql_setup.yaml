@@ -13,7 +13,7 @@
         state: present
       loop:
         - postgresql
-        - python3-psycopg2  # Python library for PostgreSQL
+        - python3-psycopg2
 
     - name: Start PostgreSQL service and enable it on boot
       service:

@@ -1,8 +1,6 @@
 #!/bin/bash
 set -e
 
-# Start PostgreSQL service
-service postgresql start
 
-# Execute your application
+service postgresql start
 npm run dev
