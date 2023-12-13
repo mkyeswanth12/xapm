@@ -33,6 +33,11 @@ This setup prioritizes simplicity in deployment while maintaining the ease of ma
    RUN npm install -g react-scripts@latest
    RUN npm install express pg bcryptjs
    RUN npm install
+2. Added files.
+   `postgresql_setup.yaml`
+   `entrypoint.sh`
+   `docker_playbook.yml`
+   `kubernetes_playbook.yml`
 
 ## Instructions to Run
 
